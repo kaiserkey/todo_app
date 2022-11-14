@@ -1,0 +1,45 @@
+doctype html
+html(lang="en")
+    head
+        title Sing In
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body 
+        nav.navbar
+            ul 
+                li 
+                    a(href="/home") Inicio
+                li 
+                    a(href="/todolist") Nueva Lista De Tareas 
+                li 
+                    a(href="/task") Nueva Tarea
+                li 
+                    a(href="/logout") Sali
+        header.user
+            h2= user.nick_name
+        
+    section#container
+        section.todolist
+            table 
+                tr 
+                    th(colspan="10") Listas Archivadas
+                tr
+                    th Titulo
+                    th Creada 
+                    th Estado
+                    th Finalizada
+                    th
+                each val in todolist
+                    tr
+                        td= val.title
+                        td= val.created
+                        td= val.status
+                        if val.finished 
+                            td= val.finished 
+                        else 
+                            td --
+                        td 
+                            a(href=`todolist/show/${val.id}`) 
+                                button(type='button') Ver

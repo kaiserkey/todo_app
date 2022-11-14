@@ -1,0 +1,245 @@
+doctype html
+html(lang="en")
+    head
+        title Home
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body 
+        nav.navbar
+            ul 
+                li 
+                    a(href="/archived") Listas Archivadas
+                li 
+                    a(href="/todolist") Nueva Lista De Tareas 
+                li 
+                    a(href="/task") Nueva Tarea
+                li 
+                    a(href="/logout") Salir
+        header.user
+            h2= user.nick_name
+    
+    - var todolist = ['todo 1', 'todo 2']
+    - var asigned = ['tarea asignada 1', 'tarea asignada 2']
+    section#container 
+        section.tasks 
+            table
+                tr.title 
+                    th(colspan="10") Mis Tareas
+                tr
+                        th Titulo
+                        th.orderby 
+                            a(href="/order?by=created")
+                                button(type='button')  Creada 
+                        th Descripcion 
+                        th.orderby  
+                            a(href="/order?by=priority")
+                                button(type='button')  Prioridad 
+                        th Estado 
+                        th.orderby  
+                            a(href="/order?by=deadline")
+                                button(type='button')  Fecha limite 
+                        th Resuelta
+                        th
+                        th
+                each val in userTasks                    
+                    tr
+                        td= val.title
+                        td= val.created
+                        td= val.description 
+                        td= val.priority 
+                        td
+                            if val.status=="unresolved"
+                                select(name=`status${val.id}` id=`status${val.id}` onchange=`update(${val.id})`)
+                                    option(value="unresolved" selected) unresolved
+                                    option(value="resolving") resolving
+                                    option(value="resolved") resolved
+                            if val.status=="resolving"
+                                select(name=`status${val.id}` id=`status${val.id}` onchange=`update(${val.id})`)
+                                    option(value="unresolved") unresolved
+                                    option(value="resolving" selected) resolving
+                                    option(value="resolved") resolved
+                            if val.status=="resolved"
+                                span resolved
+                        td= val.deadline
+                        if val.finished 
+                            td= val.finished 
+                        else 
+                            td No
+                        td 
+                            a(href=`/task/delete/${val.id}`) 
+                                button(type='button') Eliminar
+                        td 
+                            div(id=`task${val.id}`)
+        section.todolist
+                table 
+                    tr.title 
+                        th(colspan="10") Mi Lista de Tareas
+                    tr
+                            th Titulo
+                            th Creada 
+                            th Estado
+                            th Finalizada
+                            th
+                            th 
+                            th 
+                    each val in userTodos
+                        tr
+                            td= val.title
+                            td= val.created
+                            td= val.status
+                            if val.finished 
+                                td= val.finished 
+                            else 
+                                td ---
+                            td 
+                                a(href=`todolist/show/${val.id}`) 
+                                    button(type='button') Ver
+                            td 
+                                if val.candelete 
+                                    a(href=`todolist/delete/${val.id}`) 
+                                        button(type='button') Eliminar
+                                else 
+                                    span Eliminar
+                            if val.status == 'resolved'
+                                td 
+                                    a(href=`todolist/archivar/${val.id}`) 
+                                        button(type='button') Archivar
+                            else 
+                                td 
+                                    span Archivar
+        section.taskAsigned
+                table 
+                    tr.title
+                        th(colspan="5") Asignar Tarea
+                    tr 
+                        td 
+                            select(name="tasklist" id="tasklist" onchange=`addEmail()`)
+                                option(value="-") Tareas 
+                                    each val in userTasks
+                                        option(value=`${val.id}`)= val.title + " - " + val.description
+                        td 
+                            div(id="asignarEmail")
+                        td 
+                            div(id="asignarBoton") 
+                                
+                table
+                    tr.title 
+                        th(colspan="10") Tareas Asignadas
+                    tr.title 
+                        th(colspan='10') Tareas no Aceptadas
+                    tr
+                            th Titulo
+                            th Creada 
+                            th Descripcion 
+                            th Prioridad
+                            th
+                            th 
+                            th
+                            th
+                            th
+                            th 
+
+                    each val in assigned
+                        if val.acepted == 'not'                    
+                            tr
+                                td= val.task_list_asigned.title
+                                td= val.task_list_asigned.created
+                                td= val.task_list_asigned.description 
+                                td= val.task_list_asigned.priority 
+                                td
+                                    a(href=`/taskaccept?id=${val.id}`) 
+                                        button(type='button') Aceptar
+                                td
+                                td
+                                td
+                                td 
+                                td
+                    tr.title
+                        th(colspan='10') Tareas Aceptadas
+                    tr
+                            th Titulo
+                            th Creada 
+                            th Descripcion 
+                            th Prioridad 
+                            th Estado 
+                            th Tiempo limite 
+                            th Resuelta
+                            th
+                            th
+                            th
+                    each val in assigned
+                        if val.acepted == 'yes'
+                            tr
+                                td= val.task_list_asigned.title
+                                td= val.task_list_asigned.created
+                                td= val.task_list_asigned.description 
+                                td= val.task_list_asigned.priority 
+                                td
+                                    if val.task_list_asigned.status=="unresolved"
+                                        select(name=`status${val.task_list_asigned.id}` id=`status${val.task_list_asigned.id}` onchange=`update(${val.task_list_asigned.id})`)
+                                            option(value="unresolved" selected) unresolved
+                                            option(value="resolving") resolving
+                                            option(value="resolved") resolved
+                                    if val.task_list_asigned.status=="resolving"
+                                        select(name=`status${val.task_list_asigned.id}` id=`status${val.task_list_asigned.id}` onchange=`update(${val.task_list_asigned.id})`)
+                                            option(value="unresolved") unresolved
+                                            option(value="resolving" selected) resolving
+                                            option(value="resolved") resolved
+                                    if val.task_list_asigned.status=="resolved"
+                                        span resolved
+                                td= val.task_list_asigned.deadline
+                                if val.task_list_asigned.finished 
+                                    td= val.task_list_asigned.finished 
+                                else 
+                                    td No
+                                td 
+                                    a(href=`/task/delete/${val.task_list_asigned.id}`) 
+                                        button(type='button') Eliminar
+                                td 
+                                    div(id=`task${val.task_list_asigned.id}`)
+        if msgDelete 
+            script. 
+                alert('Tarea ELiminada.')
+        if asignValido 
+            script. 
+                alert("Se asigno la tarea correctamente.")
+        if asignInvalido
+            script. 
+                alert("No se puedo asignar la tarea, correo invalido.")
+        if acepted 
+            script. 
+                alert("Ocurrio un error inesperado al aceptar la tarea.")
+        if tareaRepetida 
+            script. 
+                alert("Esta tarea ya fue asignada a este usuario.")
+        script. 
+            
+            function update(id){
+                var div = document.getElementById("task"+id)
+                var status = document.getElementById("status"+id).value
+                div.innerHTML = "<a href=" + `/task/update?id=${id}&status=${status}` + "><button type='button'>Actualizar</button></a>"
+            }
+
+            function addEmail(){
+                var asignEmail = document.getElementById("asignarEmail")
+                var taskChange = document.getElementById("tasklist").value
+                var button = document.getElementById("asignarBoton")
+                if(taskChange=='-'){
+                    asignEmail.innerHTML = ""
+                    button.innerHTML = ""
+                }else{
+                    asignEmail.innerHTML = "<input type='email' id='email' oninput='addButton()'>"
+                }
+                
+
+            }
+
+            function addButton(){
+                var taskAsign = document.getElementById("tasklist").value
+                var asignEmail = document.getElementById("email").value
+                var asignButton = document.getElementById("asignarBoton")
+                
+                asignarBoton.innerHTML = "<a href=" + `/asignTask?task_id=${taskAsign}&user_email=${asignEmail}` + "><button type='button'>Asignar</button></a>"
+            }

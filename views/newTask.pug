@@ -1,0 +1,58 @@
+doctype html
+html(lang="en")
+    head
+        title New Task
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body 
+        nav.navbar
+            ul 
+                li 
+                    a(href="/home") Inicio
+                li 
+                    a(href="/archived") Listas Archivadas
+                li 
+                    a(href="/todolist") Nueva Lista De Tareas
+                li 
+                    a(href="/logout") Salir
+        header.user
+            h2= user.nick_name
+        
+        section.newTask 
+            table 
+                form(action="task/create", method="post")
+                    tr 
+                        th(colspan="2") Nueva Tarea 
+                    tr 
+                        td 
+                            label(for="title") Titulo
+                        td 
+                            input(type="text" name="title" id="title" required)
+                    tr 
+                        td 
+                            label(for="description") Descripcion
+                        td 
+                            textarea(name="description" id="description" cols="30", rows="10" required)
+                    tr 
+                        td 
+                            label(for="priority") Prioridad
+                        td 
+                            select(name="priority" id="priority")
+                                option(value="short") Baja
+                                option(value="half") Media
+                                option(value="high") Alta
+                    tr 
+                        td 
+                            label(for="deadline") Tiempo Limite
+                        td 
+                            input(type="datetime-local" name="deadline" id="deadline" required)
+                    tr 
+                        td(colspan="2") 
+                            input(type="hidden" name="user_id" id="user_id" value=user.id)
+                    tr 
+                        th(colspan="2").sabeButton
+                            input(type="submit", value="Guardar")
+
+

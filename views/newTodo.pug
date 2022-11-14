@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+    head
+        title New Todo
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body 
+        nav.navbar
+            ul 
+                li 
+                    a(href="/home") Inicio
+                li 
+                    a(href="/archived") Listas Archivadas
+                li 
+                    a(href="/task") Nueva Tarea
+                li 
+                    a(href="/logout") Salir
+        header.user
+            h2= user.nick_name
+        section.newTask 
+            table 
+                form(action="todolist/create", method="post")
+                    tr 
+                        th(colspan="2") Nueva Lista de Tareas
+                    tr 
+                        td 
+                            label(for="title") Titulo
+                        td 
+                            input(type="text" name="title" id="title")
+                            input(type="hidden" name="user_id" id="user_id" value=user.id)
+                    tr 
+                        th(colspan="2").sabeButton
+                            input(type="submit", value="Guardar")

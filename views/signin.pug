@@ -1,0 +1,52 @@
+doctype html
+html(lang="en")
+    head
+        title Sing In
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body
+        header#cabezera 
+            h1 TODO APP - Gonzalez Fernando Daniel
+        section#singinContainer 
+            form(action="/login", method="post")#singinForm
+                table#content
+                    tr.singinInput
+                        td
+                            label(for="email") Email
+                        td 
+                            input(type="email" id="email" name="email" placeholder="myemail@gmail.com" required)
+                    tr.singinInput
+                        td 
+                            label(for="password") Contraseña 
+                        td 
+                            input(type="password" id="password" name="password" placeholder="password" required)
+                    tr.singinButton
+                        td(colspan="2")
+                            input(type="submit", value="Entrar")
+                    tr.singinRegistro
+                        td(colspan="2")
+                            p ¿Tienes cuenta?
+                    tr.singinRegistro
+                        td(colspan="2")
+                            p 
+                                | Registrate aqui 
+                                a(href="/signup") Sign Up
+                    tr.singinGitHub 
+                        td(colspan="2")  
+                            p Entrar con GitHub
+                            a(href="/github")
+                                img(src="https://github.githubassets.com/favicons/favicon.png", alt="alt")
+    if gitErr 
+        script. 
+            alert("Error de autenticacion en GitHub.")
+    if error=='password'
+        script.
+            alert("La contraseña ingresada es incorrecta.")
+    if error=='login'
+        script.
+            alert("El usuario ingresado no se encuentra registrado.")
+    if registro
+        script.
+            alert("EL registro se realizo correctamente.")

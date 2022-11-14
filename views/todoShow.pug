@@ -1,0 +1,124 @@
+doctype html
+html(lang="en")
+    head
+        title Home
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet', href='/css/generalStyle.css')
+        link(rel="shortcut icon", href="/img/task-favicon.ico", type="image/x-icon")
+    body 
+        nav.navbar
+            ul 
+                li 
+                    a(href="/home") Inicio
+                li 
+                    a(href="/archived") Listas Archivadas
+                li 
+                    a(href="/todolist") Nueva Lista De Tareas 
+                li 
+                    a(href="/task") Nueva Tarea
+                li 
+                    a(href="/logout") Salir
+        header.user
+            h2= todolist.title
+        section.containerTodos 
+            section.addTask
+                table
+                    if todolist.status == 'resolved'
+                        tr(colspan="5") 
+                            th Lista de tareas resuelta
+                    if todolist.archived != 'yes' && todolist.status != 'resolved'
+                        tr 
+                            th(colspan="5") Agregar Tareas a la Lista
+                        tr 
+                            td 
+                                select(name="tasklist" id="tasklist" onchange=`addButton(${todolist.id})`)
+                                    each val in tasklist
+                                        option(value=`${val.id}`)= val.title + " - " + val.description
+                            td 
+                                div(id="button")
+                                    if tasklist[0]
+                                        a(href=`/todolist/addtask?todo_id=${todolist.id}&task_id=${tasklist[0].id}`)
+                                            button(type='button') Añadir
+        section#container
+            section.tasks 
+                table
+                    tr 
+                        th(colspan="10") Tareas en la Lista
+                    tr
+                            th Titulo
+                            th Creada 
+                            th Descripcion 
+                            th Prioridad 
+                            th Estado 
+                            th Tiempo limite 
+                            th
+                            th
+                    if todolist.task_assigned
+                        each val in todolist.task_assigned                
+                            tr
+                                td= val.title
+                                td= val.created
+                                td= val.description 
+                                td= val.priority 
+                                td
+                                    if val.status=="unresolved"
+                                        select(name=`status${val.id}` id=`status${val.id}` onchange=`update(${val.id})`)
+                                            option(value="unresolved" selected) unresolved
+                                            option(value="resolving") resolving
+                                            option(value="resolved") resolved
+                                    if val.status=="resolving"
+                                        select(name=`status${val.id}` id=`status${val.id}` onchange=`update(${val.id})`)
+                                            option(value="unresolved") unresolved
+                                            option(value="resolving" selected) resolving
+                                            option(value="resolved") resolved
+                                    if val.status=="resolved"
+                                        span resolved
+                                td= val.deadline
+                                if todolist.archived == 'not'
+                                    td 
+                                        a(href=`/task/delete/${val.id}`) 
+                                            button(type='button') Eliminar
+                                    td 
+                                        div(id=`task${val.id}`)
+                                else 
+                                    td 
+                                    td 
+            section.status 
+                table 
+                    tr 
+                        td 
+                            if todolist.status != 'resolved'
+                                select(name="status" id="status" onchange=`addUpdate(${todolist.id})`)
+                                    option(value="unresolved") Pendiente 
+                                    option(value="resolving") En Proceso
+                                    if todolist.completed
+                                        option(value="resolved") Resuelta
+                        td 
+                            if todolist.status != 'resolved'
+                                div(id='update')
+                                    a(href=`/todolist/update?id=${todolist.id}&status=unresolved`) 
+                                        button(type='button') Actualizar
+    
+    script. 
+            function update(id){
+                var div = document.getElementById("task"+id)
+                var status = document.getElementById("status"+id).value
+                div.innerHTML = "<a href=" + `/task/update?id=${id}&status=${status}` + "><button type='button'>Actualizar</button></a>"
+            }
+
+            function addButton(id){
+                var todo_id = id 
+                var task_id = document.getElementById("tasklist").value
+                var div = document.getElementById("button")
+
+                div.innerHTML = "<a href=" + `/todolist/addtask?todo_id=${todo_id}&task_id=${task_id}` + "><button type='button'>Añadir</button></a>"
+            }
+
+            function addUpdate(id){
+                var todo_id = id 
+                var status = document.getElementById("status").value
+                var div = document.getElementById("update")
+
+                div.innerHTML = "<a href=" + `/todolist/update?todo_id=${todo_id}&status=${status}` + "><button type='button'>Actualizar</button></a>"
+            }
